@@ -4,7 +4,7 @@ describe "String", ->
   assert = (a) ->
     expect(true).toEqual(a)
 
-  describe "Infections", ->
+  describe "Inflections", ->
     it "should test_pluralize", ->
       for singular, plural of InflectorTestCases.SingularToPlural
         do ->

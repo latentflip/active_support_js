@@ -115,6 +115,7 @@ String.prototype.singularize = ->
       console.log(result, r, result.match(r))
       newResult = result if result.match(r)
       
+  console.log(word, newResult)
   return newResult if newResult
 
   for singular in ActiveSupport.Inflections.singular
@@ -123,6 +124,8 @@ String.prototype.singularize = ->
         [regex,replacement] = singular
         r = new RegExp(regex, 'ig')
         newResult = result.replace(r,replacement) if result.match(r)
+
+  console.log(word, newResult)
   return newResult
   
 
@@ -142,21 +145,6 @@ String.prototype.pluralize = ->
           newResult = result.replace(r,replacement) if result.match(r)
 
     return newResult
-
-
-
-
-String.prototype.singularize = ->
-  #Gonna cheat like mad
-  console.log(this[0..-1], this[0..-1].pluralize(), this[0..-2].pluralize(), this[0..-3].pluralize())
-
-  s = null
-  s ?= this[0..-3] if this[0..-3].pluralize() == this[0..-1]
-  s ?= this[0..-1] if this[0..-1].pluralize() == this[0..-1]
-  s ?= this[0..-2] if this[0..-2].pluralize() == this[0..-1]
-  s ?= this[0..-2]
-  s[0..-1]
-
 
 
 String.prototype.capitalize = ->
