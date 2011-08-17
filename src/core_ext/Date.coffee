@@ -126,17 +126,11 @@ Date.prototype.change_week_day = (newDay) ->
 
 Date.prototype.next_week = (newDay) ->
   newDay = 'monday' unless newDay?
-  console.log(this)
-  d = this.weeks_since(1)
-  console.log(d)
-  d = d.change_week_day(newDay)
-  console.log(d)
-  d
+  this.weeks_since(1).change_week_day(newDay)
 
 Date.prototype.prev_week = (newDay) ->
   newDay = 'monday' unless newDay?
-  d = this.weeks_ago(1).change_week_day(newDay)
-  d
+  this.weeks_ago(1).change_week_day(newDay)
 
 Date.prototype.months_ago = (n) ->
   this.advance({months: -1*n})
