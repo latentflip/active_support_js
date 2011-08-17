@@ -1,24 +1,4 @@
-#ActiveSupport =
-#  zeroPad: (number,width) ->
-#    return "0"+number
-#    width -= number.toString().length
-#    
-#    if width > 0
-#      return new Array(width + (/\./.test( number ) ? 2 : 1).join('0') + number
-#    else
-#      return number
 
-ActiveSupport = {}
-ActiveSupport.zeroPad = (number,width) ->
-  width = width - number.toString().length
-  if width > 0 
-    return new Array(width + 1).join('0') + number
-  else number
-
-
-Date.prototype.dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-Date.prototype.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-Date.prototype.monthDays = [31,28,31,30,31,30,31,31,30,31,30,31]
 
 Date.prototype.isLeapYear = () ->
   y = this.getFullYear()
@@ -29,11 +9,11 @@ Date.prototype.isLeapYear = () ->
 
 Date.prototype.daysInMonth = () ->
   m = this.getMonth()
-  d = this.monthDays[m]
+  d = ActiveSupport.Date.monthDays[m]
   if (m==1 and this.isLeapYear()) then d+1 else d
 
 Date.prototype.monthName = () ->
-  this.monthNames[this.getMonth()]
+  ActiveSupport.Date.monthNames[this.getMonth()]
 
 Date.prototype.shortMonthName = () ->
   this.monthName()[0..2]
@@ -141,7 +121,7 @@ Date.prototype.weeks_since = (n) ->
 
 Date.prototype.change_week_day = (newDay) ->
   d = this.beginning_of_week()
-  d = d.addDays(this.dayNames.indexOf(newDay))
+  d = d.addDays(ActiveSupport.Date.dayNames.indexOf(newDay))
   d
 
 Date.prototype.next_week = (newDay) ->
