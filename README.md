@@ -7,9 +7,16 @@
 
 ## Status
 
-- [https://github.com/rails/rails/blob/8e236152457ed48bb436e9bffb4c5d6d4b6a26d4/activesupport/test/core_ext/date_ext_test.rb](core_ext/date_ext) - mostly complete, but some timezone issues:
+* Initially focussing on the [https://github.com/rails/rails/tree/master/activesupport/test/core_ext](core_ext) tests
+
+* [https://github.com/rails/rails/blob/master/activesupport/test/core_ext/date_ext_test.rb](core_ext/date_ext) - mostly complete, but some timezone issues:
   * methods explicitly talking about timezones haven't been looked at
-  * methods which cross BST boundaries may break
+  * methods which cross BST boundaries currently break
+  * not all specs have been copied across
+* [https://github.com/rails/rails/blob/master/activesupport/test/core_ext/string_ext_test.rb](core_ext/string_ext):
+  * most of the inflection specs are in and pass
+  * exception of some UTF8 specs
+  * not all specs have been copied across
 
 ## Getting the specs running
 
@@ -17,14 +24,12 @@ The repo uses Jasmine and the ruby Jasmine gem to make life easy. The lib and sp
 
 * `git clone git://github.com/latentflip/active_support_js.git`
 * `cd active_support_js`
-* If you have bundler installed:
-  * `bundle install`
 * If you don't have bundler:
-  * `gem install jasmine`
-* Start your coffeescript compiler:
-  * `coffee -wc spec/* public/*`
+  * `gem install bundler`
+* `bundle install`
 * Start jasmine, either:
   * `rake jasmine` - to run and view the specs in a browser
   * `rake jasmine:ci` - to run and view the specs at the command line
+* CoffeeScripts will be compiled each time the specs are run.
 
 # All contributions welcome :)
