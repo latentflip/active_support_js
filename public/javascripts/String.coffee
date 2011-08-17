@@ -1,41 +1,210 @@
-String.inflections =
-  "index": "indices",
-  "vertex": "vertices",
-  "matrix": "matrices",
-  "ox": "oxen",
-  "photo": "photos",
-  "information": "information",
-  "equipment": "equipment",
-  "mouse": "mice",
-  "louse": "lice",
-  "rice": "rice",
-  "cow": "kine"
+@ActiveSupport = @ActiveSupport || {}
+ActiveSupport.Inflections =
+  plural: [
+    ['(p)erson$', '\$1eople'],
+    ['(m)an$', '\$1en'],
+    ['(c)hild$', '\$1hildren'],
+    ['(s)ex$', '\$1exes'],
+    ['(m)ove$', '\$1oves'],
+    ['(z)ombie$', '\$1ombies']
+
+    ['(p)eople$', '\$1eople'],
+    ['(m)en$', '\$1en'],
+    ['(c)hildren$', '\$1hildren'],
+    ['(s)exes$', '\$1exes'],
+    ['(m)oves$', '\$1oves'],
+    ['(z)ombies$', '\$1ombies']
+
+    ['cow$', 'kine'],
+    ['Cow$', 'Kine'],
+
+    ['kine$', 'kine'],
+    ['Kine$', 'Kine'],
+
+    ["(quiz)$", '\$1zes'],
+    ["^(oxen)$", '\$1'],
+    ["^(ox)$", '\$1en'],
+    ["([m|l])ice$", '\$1ice']
+    ["([m|l])ouse$", '\$1ice']
+    ["(matr|vert|ind)(?:ix|ex)$", '\$1ices'],
+    ["(x|ch|ss|sh)$", '\$1es'],
+    ["([^aeiouy]|qu)y$", '\$1ies']
+    ["(hive)$", '\$1s'],
+    ["(?:([^f])fe|([lr])f)$", '\$1\$2ves']
+    ["sis$", 'ses'],
+    ["([ti])a$", '\$1a']
+    ["([ti])um$", '\$1a']
+    ["(buffal|tomat)o$", '\$1oes'],
+    ["(bu)s$", '\$1ses'],
+    ["(alias|status)$", '\$1es'],
+    ["(octop|vir)i$", '\$1i'],
+    ["(octop|vir)us$", '\$1i'],
+    ["(ax|test)is$", '\$1es'],
+    ["s$", 's'],
+    ["$", 's'],
+  ]
+  
+  singular: [
+    ['(p)eople$', '\$1erson'],
+    ['(m)en$', '\$1an'],
+    ['(c)hildren$', '\$1hild'],
+    ['(s)exes$', '\$1ex'],
+    ['(m)oves$', '\$1ove'],
+    ['(z)ombies$', '\$1ombie']
+
+    ['kine$', 'cow'],
+    ['Kine$', 'Cow'],
+
+    ["(database)s$", '\$1']
+    ["(quiz)zes$", '\$1'],
+    ["(matr)ices$", '\$1ix'],
+    ["(vert|ind)ices$", '\$1ex'],
+    ["^(ox)en", '\$1'],
+    ["(alias|status)es$", '\$1'],
+    ["(octop|vir)i$", '\$1us'],
+    ["(cris|ax|test)es$", '\$1is'],
+    ["(shoe)s$", '\$1'],
+    ["(o)es$", '\$1'],
+    ["(bus)es$", '\$1'],
+    ["([m|l])ice$", '\$1ouse'],
+    ["(x|ch|ss|sh)es$", '\$1'],
+    ["(m)ovies$", '\$1ovie'],
+    ["(s)eries$", '\$1eries'],
+    ["([^aeiouy]|qu)ies$", '\$1y'],
+    ["([lr])ves$", '\$1f'],
+    ["(tive)s$", '\$1'],
+    ["(hive)s$", '\$1'],
+    ["([^f])ves$", '\$1fe'],
+    ["(^analy)ses$", '\$1sis'],
+    ["((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", '\$1\$2sis'],
+    ["([ti])a$", '\$1um'],
+    ["(n)ews$", '\$1ews'],
+    ["s$", ''],
+  ]
+
+  irregular: [
+    ['person', 'people'],
+    ['man', 'men'],
+    ['child', 'children'],
+    ['sex', 'sexes'],
+    ['move', 'moves'],
+    ['cow', 'kine'],
+    ['zombie', 'zombies']
+  ]
+  uncountable: [
+    'equipment',
+    'information',
+    'rice',
+    'money',
+    'species',
+    'series',
+    'fish',
+    'sheep',
+    'jeans'
+  ]
+
+
+String.prototype.singularize = ->
+  word = this.toString()
+  result = this.toString()
+
+  newResult = false
+  for inflection in ActiveSupport.Inflections.uncountable
+    unless newResult
+      r = new RegExp('('+inflection+')$', 'i')
+      console.log(result, r, result.match(r))
+      newResult = result if result.match(r)
+      
+  return newResult if newResult
+
+  for singular in ActiveSupport.Inflections.singular
+    do ->
+      if !newResult
+        [regex,replacement] = singular
+        r = new RegExp(regex, 'ig')
+        newResult = result.replace(r,replacement) if result.match(r)
+  return newResult
+  
 
 String.prototype.pluralize = ->
-  [s,s1,s2,s3] = [this.split(" ")[-1..-1][0], this[-1..-1], this[-2..-1]]
+  word = this.toString()
+  result = this.toString()
+  
+  if (word.length == 0) || (result.toLowerCase() in ActiveSupport.Inflections.uncountable)
+    return result
+  else
+    newResult = false
+    for plural in ActiveSupport.Inflections.plural
+      do ->
+        if !newResult
+          [regex,replacement] = plural
+          r = new RegExp(regex, 'ig')
+          newResult = result.replace(r,replacement) if result.match(r)
 
-  return String.inflections[s] if String.inflections[s]?
+    return newResult
 
-  return this if s in ['fish','jeans']
-  return this[0..-4]+"men" if s[-3..-1] == "man"
-  return this[0..-7]+"people" if s[-6..-1] == "person"
-  return this[0..-6]+"children" if s[-5..-1] == "child"
 
-  return this+"zes" if s1 == "z"
-  return this+"es" if s1 == ""
 
-  return this[0..-2]+"ies" if s1 == "y" and s2 != "ay"
 
-  return this[0..-3]+"i" if s2 in ["us"] and this[-3..-3] in ["r","p"]
+String.prototype.singularize = ->
+  #Gonna cheat like mad
+  console.log(this[0..-1], this[0..-1].pluralize(), this[0..-2].pluralize(), this[0..-3].pluralize())
 
-  return this[0..-2]+"ves" if s2 in ["lf", "rf"]
-  return this[0..-3]+"ves" if s2 in ["fe"]
-  return this[0..-3]+"es" if s2 in ["is"]
-  return this[0..-3]+"a" if s2 in ["um"]
-  return this+"es" if this[-3..-1] in ["ias"]
-  return this+"s" if s2 in ["io"]
-  return this+"es" if s2 in ["ch", "ss", "sh", "us"] or s1 in ["x","o"]
-  return this if s[-4..-1] in ["news"]
-  return this if s[-3..-1] in ["ies"]
-  return this if s1 == "s"
-  this+"s"
+  s = null
+  s ?= this[0..-3] if this[0..-3].pluralize() == this[0..-1]
+  s ?= this[0..-1] if this[0..-1].pluralize() == this[0..-1]
+  s ?= this[0..-2] if this[0..-2].pluralize() == this[0..-1]
+  s ?= this[0..-2]
+  s[0..-1]
+
+
+
+String.prototype.capitalize = ->
+  this[0..0].toUpperCase() + this[1..-1]
+
+
+
+String.prototype.titleize = ->
+  ns = (word.capitalize() for word in this.split(/[\s_]/)).join(' ')
+  ns.replace(/([a-z0-9])(?=[A-Z])/g, '\$1 ')
+
+String.prototype.camelize = (lower) ->
+  ns = this.titleize().replace(/\s/,'').toString()
+  ns = ns[0..0].toLowerCase() + ns[1..-1] if lower
+  ns
+
+
+String.prototype.underscore = ->
+  ns = this.replace(/([a-z0-9])(?=[A-Z])/g, '\$1_')
+  ns = ns.replace(/([A-Z])([A-Z])(?=[a-z])/g, '\$1_\$2')
+  ns = ns.replace(/\s+/,/_/)
+  ns = ns.toLowerCase()
+  ns.toString()
+
+
+String.prototype.demodulize = ->
+  this.split('::')[-1..-1].toString()
+
+
+String.prototype.foreign_key = (underscore)->
+  u = "_"
+  u = "" if underscore==false
+  [this.underscore().demodulize(), 'id'].join(u)
+
+String.prototype.tableize = ->
+  this.underscore().pluralize().toString()
+
+#Have to do singularize first
+#String.prototype.classify = ->
+#
+String.prototype.parameterize = (seperator) ->
+  seperator = '-' unless seperator?
+  this.replace(/[^A-Za-z\s_-]/g, '').replace(/\s+/g, seperator).toLowerCase()
+
+String.prototype.humanize = ->
+  this.replace('_id','').replace('_',' ').capitalize()
+
+String.prototype.ord = ->
+  this.charCodeAt(0)
+
+
