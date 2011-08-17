@@ -5,6 +5,12 @@
 * I appreciate that: "Can be a bit of a no-no. JavaScripters aren't natural monkey-patchers." - @froots101 but I'm going to try anyway and see what happens.
 
 
+## Status
+
+- [https://github.com/rails/rails/blob/8e236152457ed48bb436e9bffb4c5d6d4b6a26d4/activesupport/test/core_ext/date_ext_test.rb](core_ext/date_ext) - mostly complete, but some timezone issues:
+  * methods explicitly talking about timezones haven't been looked at
+  * methods which cross BST boundaries may break
+
 ## Getting the specs running
 
 The repo uses Jasmine and the ruby Jasmine gem to make life easy. The lib and specs are all written in coffeescript so you will need to have a coffeescript compiler installed
