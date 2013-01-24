@@ -1,3 +1,8 @@
+# Abandoned: This was a fairly rubbish idea.
+
+Try underscore.string, moment.js etc.
+
+
 # Rails' ActiveSupport in JavaScript
 
 * **This is very much a work in progress**, please fork, play, contribute - but don't use it in production yet
